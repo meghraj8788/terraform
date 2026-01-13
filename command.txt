@@ -1,0 +1,14 @@
+ 2 aws configure
+ you have to connect to aws first 
+
+ you need ssh ey so ou can give public key to key pair 
+   3 ssh-keygen
+
+   9 terraform validate
+  10 terraform init
+  11 terraform validate
+  12 terraform validate
+  13 terraform plan
+  14 terraform apply
+  15 terraform apply
+  16 terraform apply

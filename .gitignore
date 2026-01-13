@@ -1,0 +1,11 @@
+#ignore all log file
+*.log
+
+#ignore all pem
+*.pem
+*.pub
+
+#ignore terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
