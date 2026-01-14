@@ -1,6 +1,6 @@
 #add key pair first
 resource aws_key_pair my_key {
-    key_name = "terra-key"
+    key_name = "terra-key-dev"
     public_key = file("terra-key.pub") 
 }
 
@@ -11,7 +11,7 @@ resource aws_default_vpc default {
 
 #security group
 resource aws_security_group my_group {
-    name = "automate-sg"
+    name = "automate-sg-dev"
     description = "Allow TLS inbound traffic and all outbound traffic"
     vpc_id      = aws_default_vpc.default.id
 
@@ -44,18 +44,32 @@ resource aws_security_group my_group {
 }
 
 resource "aws_instance" "my_instance" {
+    #count = 2 it will create 2 instance but name will be same to create diff name we use for for_each = associate_public_ip_address =  
+    for_each = tomap({
+        meghraj-terra-one-dev = "t2.micro"
+    })
+
     key_name = aws_key_pair.my_key.key_name
     security_groups = [aws_security_group.my_group.name]
-    instance_type = var.ec2_instance_type
+    instance_type = each.value
     ami = var.ec2_ami_id
     user_data= file("install_nginx.sh")
 
+    # root_block_device {
+    #     volume_size = var.ec2_root_storage_size
+    #     volume_type = "gp3"
+    # }
+    # it just want to test conditional expressions (if else)
+    #conditional statement = if else
+    #if true ? apply this : if false apply this 
     root_block_device {
-        volume_size = var.ec2_root_storage_size
-        volume_type = "gp3"
-    }
+         volume_size = var.env == "prd" ? 15 : var.ec2_root_storage_size
+         volume_type = "gp3"
+     }
+
     tags = {
-        Name = "meghraj-terraform-ec2"
+        Name = each.key
+        Envoirment = var.env
     }
 
 }
